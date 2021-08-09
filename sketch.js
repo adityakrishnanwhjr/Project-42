@@ -1,36 +1,63 @@
-var spacecraft, spacecraft1Img, spacecraft2Img, spacecraft3Img, spacecraft4Img;
-var bg;
-var iss, issImage;
+var spacecraft, iss, bg;
+var spacecraft1Img, spacecraft2Img, spacecraft3Img, spacecraft4Img;
+var issImage;
 var hasDocked;
-hasDocked = "false";
+hasDocked = false;
 
 function preload(){
-   spacecraft1Img=loadImage("spacecraft1.png");
-   spacecraft2Img=loadImage("spacecraft2.png");
-   spacecraft3Img=loadImage("spacecraft3.png");
-   spacecraft4Img=loadImage("spacecraft4.png");
-   bg=loadImage("spacebg.jpg");
-   issImage=loadImage("iss.png");
+  spacecraft1Img=loadAnimation("spacecraft1.png");
+  spacecraft2Img=loadAnimation("spacecraft2.png");
+  spacecraft3Img=loadAnimation("spacecraft3.png");
+  spacecraft4Img=loadAnimation("spacecraft4.png");
+  bg=loadImage("spacebg.jpg");
+  issImage=loadImage("iss.png");
 }
 
 function setup() {
   createCanvas(800,400);
 
-  iss=createSprite(400, 200, 50, 50);
+  spacecraft=createSprite(400,290);
+  spacecraft.scale=0.2;
+
+  iss=createSprite(400, 150, 50, 50);
   iss.addImage(issImage);
   iss.scale=0.5;
-
-  spacecraft=createSprite(Math.round(random(200,600)),350,50,50);
-  spacecraft.addImage(spacecraft1Img);
-  spacecraft.scale=0.25;
 }
 
 function draw() {
-  background(bg)
+  background(bg);  
+
   if(!hasDocked){
-    spacecraft.x=Math.round(random(200,600));
-    if(keyCode===LEFT_ARROW){
-      spacecraft.x=spacecraft.x-2;
+    spacecraft.x=Math.round(random(spacecraft.x-2,spacecraft.x+2))
+    spacecraft.addAnimation("normal",spacecraft1Img);
+    if(keyDown(LEFT_ARROW)){
+      spacecraft.addAnimation("normal",spacecraft3Img);
+      spacecraft.x=spacecraft.x-1;
     }
+
+    if(keyDown(RIGHT_ARROW)){
+      spacecraft.addAnimation("normal",spacecraft4Img);
+      spacecraft.x=spacecraft.x+1;
+    }
+
+    if(keyDown(DOWN_ARROW)){
+      spacecraft.addAnimation("normal",spacecraft2Img);
+    }
+
+    if(keyDown(UP_ARROW)){
+      spacecraft.y=spacecraft.y-1
+    }
+
+    if(spacecraft.x>360 && spacecraft.x<380 && spacecraft.y>200 && spacecraft.y<210){
+      hasDocked = true;
+    }
+  }
+
+  drawSprites();
+
+  if(hasDocked===true){
+    textSize(25);
+    fill("white");
+    text("Docking Successful!", 300, 375);
   }
 }
